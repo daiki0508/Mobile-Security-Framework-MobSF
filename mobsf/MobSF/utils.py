@@ -20,7 +20,7 @@ import sqlite3
 import unicodedata
 import threading
 from pathlib import Path
-from distutils.version import StrictVersion
+from packaging import version
 
 import distro
 
@@ -139,8 +139,8 @@ def check_update():
                                  proxies=proxies, verify=verify)
         remote_version = response.next.path_url.split('v')[1]
         if remote_version:
-            sem_loc = StrictVersion(local_version)
-            sem_rem = StrictVersion(remote_version)
+            sem_loc = version.parse(local_version)
+            sem_rem = version.parse(remote_version)
             if sem_loc < sem_rem:
                 logger.warning('A new version of MobSF is available, '
                                'Please update to %s from master branch.',
