@@ -81,6 +81,7 @@ def get_context_from_db_entry(db_entry: QuerySet) -> dict:
             'trackers': python_dict(db_entry[0].TRACKERS),
             'playstore_details': python_dict(db_entry[0].PLAYSTORE_DETAILS),
             'secrets': python_list(db_entry[0].SECRETS),
+            'originals': python_list(db_entry[0].ORIGINALS)
         }
         return context
     except Exception:
@@ -95,7 +96,8 @@ def get_context_from_analysis(app_dic,
                               bin_anal,
                               apk_id,
                               quark_report,
-                              trackers) -> dict:
+                              trackers,
+                              originals) -> dict:
     """Get the context for APK/ZIP from analysis results."""
     try:
         package = man_data_dic['packagename']
@@ -153,6 +155,7 @@ def get_context_from_analysis(app_dic,
             'trackers': trackers,
             'playstore_details': app_dic['playstore'],
             'secrets': code_an_dic['secrets'],
+            'originals': originals
         }
         return context
     except Exception:
@@ -168,7 +171,8 @@ def save_or_update(update_type,
                    bin_anal,
                    apk_id,
                    quark_report,
-                   trackers) -> None:
+                   trackers,
+                   originals) -> None:
     """Save/Update an APK/ZIP DB entry."""
     try:
         values = {
@@ -217,6 +221,7 @@ def save_or_update(update_type,
             'PLAYSTORE_DETAILS': app_dic['playstore'],
             'NETWORK_SECURITY': man_an_dic['network_security'],
             'SECRETS': code_an_dic['secrets'],
+            'ORIGINALS': originals
         }
         if update_type == 'save':
             db_entry = StaticAnalyzerAndroid.objects.filter(
@@ -240,7 +245,7 @@ def save_or_update(update_type,
         logger.exception('Updating RecentScansDB')
 
 
-def save_get_ctx(app, man, m_anal, code, cert, elf, apkid, quark, trk, rscn):
+def save_get_ctx(app, man, m_anal, code, cert, elf, apkid, quark, trk, origin, rscn):
     # SAVE TO DB
     if rscn:
         logger.info('Updating Database...')
@@ -260,6 +265,7 @@ def save_get_ctx(app, man, m_anal, code, cert, elf, apkid, quark, trk, rscn):
         apkid,
         quark,
         trk,
+        origin
     )
     return get_context_from_analysis(
         app,
@@ -271,4 +277,5 @@ def save_get_ctx(app, man, m_anal, code, cert, elf, apkid, quark, trk, rscn):
         apkid,
         quark,
         trk,
+        origin
     )

@@ -90,6 +90,9 @@ from mobsf.StaticAnalyzer.views.common.shared_func import (
 from mobsf.StaticAnalyzer.views.common.appsec import (
     get_android_dashboard,
 )
+from mobsf.StaticAnalyzer.views.common.binary.nuclei import(
+    get_secret_text_from_binary
+)
 
 
 logger = logging.getLogger(__name__)
@@ -280,6 +283,8 @@ def static_analyzer(request, checksum, api=False):
                     'Performing Malware Check on extracted Domains')
                 code_an_dic['domains'] = MalwareDomainCheck().scan(
                     code_an_dic['urls_list'])
+                # Secrets Info Check
+                original_func = get_secret_text_from_binary(app_dic['app_dir'])
 
                 app_dic['zipped'] = 'apk'
                 context = save_get_ctx(
@@ -292,6 +297,7 @@ def static_analyzer(request, checksum, api=False):
                     apkid_results,
                     quark_results,
                     tracker_res,
+                    original_func,
                     rescan,
                 )
             context['appsec'] = get_android_dashboard(context, True)
@@ -458,6 +464,7 @@ def static_analyzer(request, checksum, api=False):
                         {},
                         [],
                         trackers,
+                        [],
                         rescan,
                     )
                 else:
