@@ -19,19 +19,23 @@ def parse_json(json_path, app_dir):
     return decode_json
 
 
-def get_secret_text_from_binary(app_dir):
+def get_secret_text_from_binary(app_type, src, bin_name):
     logger.info("Get Secrets Info from Binary")
 
-    app_dir = app_dir + 'apktool_out' + '/'
+    app_dir = ''
+    if app_type == "apk":
+        app_dir = src + 'apktool_out' + '/'
+    elif app_type == 'ipa':
+        app_dir = src + bin_name + '.app' + '/'
     command = ['echo', app_dir]
-    command2 = ['nuclei', '-t', home + 'nuclei-templates/file/keys', '-et', home + 'nuclei-templates/file/keys/credential-exposure-file.yaml', '-je', app_dir + 'test.json']
+    command2 = ['nuclei', '-t', home + 'nuclei-templates/file/keys', '-et', home + 'nuclei-templates/file/keys/credential-exposure-file.yaml', '-je', app_dir + 'tmp.json']
 
     try:
         result_echo = subprocess.Popen(command, stdout=subprocess.PIPE)
         subprocess.run(command2, capture_output=True, text=True, check=True, stdin=result_echo.stdout)
     except subprocess.CalledProcessError as e:
         logger.error(e.stderr)
-    json_path = app_dir + 'test.json'
+    json_path = app_dir + 'tmp.json'
     secrets_json = parse_json(json_path, app_dir)
 
     remove(json_path)

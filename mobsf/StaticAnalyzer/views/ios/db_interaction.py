@@ -66,6 +66,7 @@ def get_context_from_db_entry(db_entry):
             'appstore_details': python_dict(db_entry[0].APPSTORE_DETAILS),
             'secrets': python_list(db_entry[0].SECRETS),
             'trackers': python_dict(db_entry[0].TRACKERS),
+            'originals': python_list(db_entry[0].ORIGINALS),
 
         }
         return context
@@ -77,7 +78,8 @@ def get_context_from_analysis(app_dict,
                               info_dict,
                               code_dict,
                               bin_dict,
-                              all_files):
+                              all_files,
+                              originals):
     """Get the context for IPA/ZIP from analysis results."""
     try:
         bundle_id = info_dict['id']
@@ -128,6 +130,7 @@ def get_context_from_analysis(app_dict,
             'appstore_details': app_dict['appstore'],
             'secrets': app_dict['secrets'],
             'trackers': code_dict['trackers'],
+            'originals': originals,
         }
         return context
     except Exception:
@@ -139,7 +142,8 @@ def save_or_update(update_type,
                    info_dict,
                    code_dict,
                    bin_dict,
-                   all_files):
+                   all_files,
+                   originals):
     """Save/Update an IPA/ZIP DB entry."""
     try:
         values = {
@@ -181,6 +185,7 @@ def save_or_update(update_type,
             'APPSTORE_DETAILS': app_dict['appstore'],
             'SECRETS': app_dict['secrets'],
             'TRACKERS': code_dict['trackers'],
+            'ORIGINALS': originals,
         }
         if update_type == 'save':
             db_entry = StaticAnalyzerIOS.objects.filter(
@@ -204,7 +209,7 @@ def save_or_update(update_type,
         logger.exception('Updating RecentScansDB')
 
 
-def save_get_ctx(app_dict, pdict, code_dict, bin_dict, all_files, rescan):
+def save_get_ctx(app_dict, pdict, code_dict, bin_dict, all_files, origin, rescan):
     # Saving to DB
     logger.info('Connecting to DB')
     if rescan:
@@ -220,10 +225,12 @@ def save_get_ctx(app_dict, pdict, code_dict, bin_dict, all_files, rescan):
         pdict,
         code_dict,
         bin_dict,
-        all_files)
+        all_files,
+        origin)
     return get_context_from_analysis(
         app_dict,
         pdict,
         code_dict,
         bin_dict,
-        all_files)
+        all_files,
+        origin)

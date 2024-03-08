@@ -284,7 +284,7 @@ def static_analyzer(request, checksum, api=False):
                 code_an_dic['domains'] = MalwareDomainCheck().scan(
                     code_an_dic['urls_list'])
                 # Secrets Info Check
-                original_func = get_secret_text_from_binary(app_dic['app_dir'])
+                original_func = get_secret_text_from_binary(typ, app_dic['app_dir'], None)
 
                 app_dic['zipped'] = 'apk'
                 context = save_get_ctx(

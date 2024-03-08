@@ -61,6 +61,9 @@ from mobsf.StaticAnalyzer.views.common.appsec import (
 from mobsf.MalwareAnalyzer.views.MalwareDomainCheck import (
     MalwareDomainCheck,
 )
+from mobsf.StaticAnalyzer.views.common.binary.nuclei import (
+    get_secret_text_from_binary
+)
 
 logger = logging.getLogger(__name__)
 
@@ -198,12 +201,14 @@ def static_analyzer_ios(request, checksum, api=False):
                 code_dict['firebase'] = firebase_analysis(
                     code_dict['urls_list'])
                 code_dict['trackers'] = trackers
+                original_func = get_secret_text_from_binary(file_type, app_dict['bin_dir'], infoplist_dict.get('bin'))
                 context = save_get_ctx(
                     app_dict,
                     infoplist_dict,
                     code_dict,
                     bin_dict,
                     all_files,
+                    original_func,
                     rescan)
             context['virus_total'] = None
             if settings.VT_ENABLED:
@@ -282,6 +287,7 @@ def static_analyzer_ios(request, checksum, api=False):
                     code_analysis_dic,
                     fake_bin_dict,
                     all_files,
+                    [],
                     rescan)
             context['appsec'] = get_ios_dashboard(context, True)
             context['average_cvss'] = get_avg_cvss(
