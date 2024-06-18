@@ -61,12 +61,20 @@ from mobsf.StaticAnalyzer.views.common.appsec import (
 from mobsf.MalwareAnalyzer.views.MalwareDomainCheck import (
     MalwareDomainCheck,
 )
+
 from mobsf.StaticAnalyzer.views.common.binary.nuclei import (
     get_secret_text_from_binary
 )
 
-logger = logging.getLogger(__name__)
+from mobsf.MobSF.views.authentication import (
+    login_required,
+)
+from mobsf.MobSF.views.authorization import (
+    Permissions,
+    has_permission,
+)
 
+logger = logging.getLogger(__name__)
 register.filter('relative_path', relative_path)
 
 ##############################################################
@@ -74,6 +82,7 @@ register.filter('relative_path', relative_path)
 ##############################################################
 
 
+@login_required
 def static_analyzer_ios(request, checksum, api=False):
     """Module that performs iOS IPA/ZIP Static Analysis."""
     try:
@@ -101,10 +110,11 @@ def static_analyzer_ios(request, checksum, api=False):
         if file_type == 'dylib' and not Path(filename).suffix:
             # Force dylib extension on Frameworks
             filename = f'{filename}.dylib'
-        allowed_exts = ('ios', '.ipa', '.zip', '.dylib', '.a')
-        allowed_typ = [i.replace('.', '') for i in allowed_exts]
+        ios_exts = tuple(f'.{i}' for i in settings.IOS_EXTS)
+        allowed_exts = ios_exts + ('.zip', 'ios')
+        allowed_types = settings.IOS_EXTS + ('zip', 'ios')
         if (not filename.lower().endswith(allowed_exts)
-                or file_type not in allowed_typ):
+                or file_type not in allowed_types):
             return print_n_send_error_response(
                 request,
                 'Invalid file extension or file type',
@@ -130,6 +140,11 @@ def static_analyzer_ios(request, checksum, api=False):
             if ipa_db.exists() and not rescan:
                 context = get_context_from_db_entry(ipa_db)
             else:
+                if not has_permission(request, Permissions.SCAN, api):
+                    return print_n_send_error_response(
+                        request,
+                        'Permission Denied',
+                        False)
                 logger.info('iOS Binary (IPA) Analysis Started')
                 app_dict['size'] = str(
                     file_size(app_dict['app_path'])) + 'MB'  # FILE SIZE
@@ -234,6 +249,11 @@ def static_analyzer_ios(request, checksum, api=False):
             if ios_zip_db.exists() and not rescan:
                 context = get_context_from_db_entry(ios_zip_db)
             else:
+                if not has_permission(request, Permissions.SCAN, api):
+                    return print_n_send_error_response(
+                        request,
+                        'Permission Denied',
+                        False)
                 logger.info('iOS Source Code Analysis Started')
                 app_dict['app_file'] = app_dict[
                     'md5_hash'] + '.zip'  # NEW FILENAME
