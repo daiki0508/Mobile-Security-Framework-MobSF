@@ -29,10 +29,8 @@ class MachOChecksec:
             self.macho_name = rel_path
         else:
             self.macho_name = macho.name
-        if re.search(r'[ぁ-ん]+|[ァ-ヴー]+|[一-龠]+', self.macho_name):  
-            self.macho = lief.MachO.FatBinary.at(lief.MachO.parse(self.macho_path, config=lief.MachO.ParserConfig.quick), 0)
-        else:
-            self.macho = lief.parse(self.macho_path)
+        
+        self.macho = lief.MachO.FatBinary.at(lief.MachO.parse(self.macho_path, config=lief.MachO.ParserConfig.quick), 0)
 
     def checksec(self):
         macho_dict = {}
