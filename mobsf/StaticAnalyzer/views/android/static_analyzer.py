@@ -91,17 +91,17 @@ from mobsf.StaticAnalyzer.views.common.shared_func import (
 from mobsf.StaticAnalyzer.views.common.appsec import (
     get_android_dashboard,
 )
-<<<<<<< HEAD
+
 from mobsf.StaticAnalyzer.views.common.binary.nuclei import(
     get_secret_text_from_binary
-=======
+)
+
 from mobsf.MobSF.views.authentication import (
     login_required,
 )
 from mobsf.MobSF.views.authorization import (
     Permissions,
     has_permission,
->>>>>>> upstream/master
 )
 
 
