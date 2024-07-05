@@ -23,6 +23,9 @@ from mobsf.StaticAnalyzer.views.common.binary.lib_analysis import (
 from mobsf.StaticAnalyzer.views.ios.binary_rule_matcher import (
     binary_rule_matcher,
 )
+from mobsf.StaticAnalyzer.views.common.binary.nuclei import (
+    get_secret_text_from_binary
+)
 from mobsf.StaticAnalyzer.views.ios.db_interaction import (
     get_context_from_db_entry,
     save_get_ctx,
@@ -145,12 +148,14 @@ def dylib_analysis(request, app_dict, rescan, api):
         code_dict['firebase'] = firebase_analysis(
             code_dict['urls_list'])
         code_dict['trackers'] = trackers
+        original_func = get_secret_text_from_binary('dylib', app_dict['bin_dir'], app_dict['app_file'])
         context = save_get_ctx(
             app_dict,
             infoplist_dict,
             code_dict,
             bin_dict,
             all_files,
+            original_func,
             rescan)
     context['virus_total'] = None
     if settings.VT_ENABLED:

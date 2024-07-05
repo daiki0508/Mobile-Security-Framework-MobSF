@@ -14,7 +14,7 @@ py_minor=$(echo "$python_version" | cut -d'.' -f2)
 if [ "$py_major" -eq "3" ] && [ "$py_minor" -gt "9" ] && [ "$py_minor" -lt "13" ]; then
     echo "[INSTALL] Found Python ${python_version}"
 else
-    echo "[ERROR] MobSF dependencies require Python 3.10 - 3.11. You have Python version ${python_version} or python3 points to Python ${python_version}."
+    echo "[ERROR] MobSF dependencies require Python 3.10 - 3.12. You have Python version ${python_version} or python3 points to Python ${python_version}."
     exit 1
 fi
 

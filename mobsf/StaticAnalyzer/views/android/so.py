@@ -24,6 +24,9 @@ from mobsf.StaticAnalyzer.views.android.strings import (
 from mobsf.StaticAnalyzer.models import (
     StaticAnalyzerAndroid,
 )
+from mobsf.StaticAnalyzer.views.common.binary.nuclei import(
+    get_secret_text_from_binary
+)
 from mobsf.StaticAnalyzer.views.android.db_interaction import (
     get_context_from_db_entry,
     save_get_ctx,
@@ -143,6 +146,7 @@ def so_analysis(request, app_dic, rescan, api):
             code_an_dic['domains'], [])
 
         app_dic['zipped'] = 'so'
+        original_func = get_secret_text_from_binary('so', app_dic['app_dir'], app_dic['app_file'])
         context = save_get_ctx(
             app_dic,
             man_data_dic,
@@ -153,6 +157,7 @@ def so_analysis(request, app_dic, rescan, api):
             apkid_results,
             quark_results,
             trackers,
+            original_func,
             rescan,
         )
     context['appsec'] = {}
