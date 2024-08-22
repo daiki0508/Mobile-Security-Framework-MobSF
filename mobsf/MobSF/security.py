@@ -86,6 +86,8 @@ def get_executable_hashes():
         'BinSkim.exe',
         'BinScope.exe',
         'nuget.exe',
+        'where.exe',
+        'wkhtmltopdf.exe',
     ]
     for sbin in system_bins:
         bin_path = which(sbin)
@@ -195,3 +197,13 @@ def wrap_function(oldfunction, newfunction):
     def run(*args, **kwargs):
         return newfunction(oldfunction, *args, **kwargs)
     return run
+
+
+def sanitize_redirect(url):
+    """Sanitize Redirect URL."""
+    root = '/'
+    if url.startswith('//'):
+        return root
+    elif url.startswith('/'):
+        return url
+    return root
