@@ -46,7 +46,8 @@ if [[ $unamestr == 'Darwin' ]]; then
 fi
 
 echo '[INSTALL] Installing Requirements'
-python3 -m pip install --no-cache-dir wheel poetry==1.6.1
+python3 -m pip install --no-cache-dir wheel poetry==1.8.4
+python3 -m poetry lock
 python3 -m poetry install --no-root --only main --no-interaction --no-ansi
 
 echo '[INSTALL] Clean Up'

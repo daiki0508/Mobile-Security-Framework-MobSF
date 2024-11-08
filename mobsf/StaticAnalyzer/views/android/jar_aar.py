@@ -7,17 +7,22 @@ from django.shortcuts import render
 
 import mobsf.MalwareAnalyzer.views.Trackers as Trackers
 import mobsf.MalwareAnalyzer.views.VirusTotal as VirusTotal
-from mobsf.MalwareAnalyzer.views.android import permissions
+from mobsf.MalwareAnalyzer.views.android import (
+    behaviour_analysis,
+    permissions,
+)
 from mobsf.MobSF.utils import (
     append_scan_status,
     file_size,
     print_n_send_error_response,
 )
 from mobsf.StaticAnalyzer.views.common.shared_func import (
-    firebase_analysis,
     get_avg_cvss,
     hash_gen,
     unzip,
+)
+from mobsf.StaticAnalyzer.views.common.firebase import (
+    firebase_analysis,
 )
 from mobsf.StaticAnalyzer.views.common.appsec import (
     get_android_dashboard,
@@ -59,6 +64,7 @@ from mobsf.MobSF.views.authorization import (
     has_permission,
 )
 
+APK_TYPE = 'apk'
 logger = logging.getLogger(__name__)
 
 
@@ -191,31 +197,34 @@ def common_analysis(request, app_dic, rescan, api, analysis_type):
             checksum,
             app_dic['app_path'],
             app_dic['app_dir'],
-            app_dic['tools_dir'])
+            settings.DOWNLOADED_TOOLS_DIR)
         code_an_dic = code_analysis(
             checksum,
             app_dic['app_dir'],
-            'apk',
+            APK_TYPE,
             app_dic['manifest_file'],
             man_data_dic['perm'])
         obfuscated_check(
             checksum,
             app_dic['app_dir'],
             code_an_dic)
-        quark_results = []
+        behaviour_an = behaviour_analysis.analyze(
+            checksum,
+            app_dic['app_dir'],
+            APK_TYPE)
         # Get the strings and metadata
         get_strings_metadata(
             checksum,
             apk,
             app_dic['app_dir'],
             elf_dict['elf_strings'],
-            'apk',
+            APK_TYPE,
             ['.java'],
             code_an_dic)
         # Firebase DB Check
         code_an_dic['firebase'] = firebase_analysis(
             checksum,
-            code_an_dic['urls_list'])
+            code_an_dic)
         # Domain Extraction and Malware Check
         code_an_dic['domains'] = MalwareDomainCheck().scan(
             checksum,
@@ -230,7 +239,7 @@ def common_analysis(request, app_dic, rescan, api, analysis_type):
             cert_dic,
             elf_dict['elf_analysis'],
             {},
-            quark_results,
+            behaviour_an,
             tracker_res,
             rescan,
         )

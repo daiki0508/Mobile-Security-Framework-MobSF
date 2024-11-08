@@ -22,7 +22,8 @@ import unicodedata
 import threading
 from urllib.parse import urlparse
 from pathlib import Path
-from packaging import version
+
+from packaging.version import Version
 
 import distro
 
@@ -34,6 +35,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from mobsf.StaticAnalyzer.models import RecentScansDB
+from mobsf.MobSF. init import api_key
 
 from . import settings
 
@@ -53,6 +55,8 @@ URL_REGEX = re.compile(
     re.UNICODE)
 EMAIL_REGEX = re.compile(r'[\w+.-]{1,20}@[\w-]{1,20}\.[\w]{2,10}')
 USERNAME_REGEX = re.compile(r'^\w[\w\-\@\.]{1,35}$')
+GOOGLE_API_KEY_REGEX = re.compile(r'AIza[0-9A-Za-z-_]{35}$')
+GOOGLE_APP_ID_REGEX = re.compile(r'\d{1,2}:\d{1,50}:android:[a-f0-9]{1,50}')
 
 
 class Color(object):
@@ -88,34 +92,20 @@ def upstream_proxy(flaw_type):
     return proxies, verify
 
 
-def api_key():
-    """Print REST API Key."""
-    if os.environ.get('MOBSF_API_KEY'):
-        logger.info('\nAPI Key read from environment variable')
-        return os.environ['MOBSF_API_KEY']
-
-    secret_file = os.path.join(settings.MobSF_HOME, 'secret')
-    if is_file_exists(secret_file):
-        try:
-            _api_key = open(secret_file).read().strip()
-            return gen_sha256_hash(_api_key)
-        except Exception:
-            logger.exception('Cannot Read API Key')
-
-
 def print_version():
     """Print MobSF Version."""
     logger.info(settings.BANNER)
     ver = settings.MOBSF_VER
     logger.info('Author: Ajin Abraham | opensecurity.in')
+    mobsf_api_key = api_key(settings.MOBSF_HOME)
     if platform.system() == 'Windows':
         logger.info('Mobile Security Framework %s', ver)
-        print('REST API Key: ' + api_key())
+        print(f'REST API Key: {mobsf_api_key}')
         print('Default Credentials: mobsf/mobsf')
     else:
         logger.info(
             '%sMobile Security Framework %s%s', Color.GREY, ver, Color.END)
-        print(f'REST API Key: {Color.BOLD}{api_key()}{Color.END}')
+        print(f'REST API Key: {Color.BOLD}{mobsf_api_key}{Color.END}')
         print(f'Default Credentials: {Color.BOLD}mobsf/mobsf{Color.END}')
     os = platform.system()
     pltfm = platform.platform()
@@ -148,8 +138,8 @@ def check_update():
                                  proxies=proxies, verify=verify)
         remote_version = response.next.path_url.split('v')[1]
         if remote_version:
-            sem_loc = version.parse(local_version)
-            sem_rem = version.parse(remote_version)
+            sem_loc = Version(local_version)
+            sem_rem = Version(remote_version)
             if sem_loc < sem_rem:
                 logger.warning('A new version of MobSF is available, '
                                'Please update to %s from master branch.',
@@ -946,3 +936,28 @@ def get_scan_logs(checksum):
         msg = 'Fetching scan logs from the DB failed.'
         logger.exception(msg)
     return []
+
+
+class TaskTimeoutError(Exception):
+    pass
+
+
+def run_with_timeout(func, limit, *args, **kwargs):
+    def run_func(result, *args, **kwargs):
+        result.append(func(*args, **kwargs))
+
+    result = []
+    thread = threading.Thread(
+        target=run_func,
+        args=(result, *args),
+        kwargs=kwargs)
+    thread.start()
+    thread.join(limit)
+
+    if thread.is_alive():
+        msg = (f'function <{func.__name__}> '
+               f'timed out after {limit} seconds')
+        raise TaskTimeoutError(msg)
+    if result:
+        return result[0]
+    return None

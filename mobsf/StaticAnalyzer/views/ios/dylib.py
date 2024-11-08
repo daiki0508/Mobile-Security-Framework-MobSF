@@ -35,9 +35,11 @@ from mobsf.StaticAnalyzer.views.ios.strings import (
     get_strings_metadata,
 )
 from mobsf.StaticAnalyzer.views.common.shared_func import (
-    firebase_analysis,
     get_symbols,
     hash_gen,
+)
+from mobsf.StaticAnalyzer.views.common.firebase import (
+    firebase_analysis,
 )
 from mobsf.MalwareAnalyzer.views.MalwareDomainCheck import (
     MalwareDomainCheck,
@@ -151,7 +153,7 @@ def dylib_analysis(request, app_dict, rescan, api):
         code_dict['code_anal'] = {}
         code_dict['firebase'] = firebase_analysis(
             checksum,
-            code_dict['urls_list'])
+            code_dict)
         code_dict['trackers'] = trackers
         original_func = get_secret_text_from_binary('dylib', app_dict['bin_dir'], app_dict['app_file'])
         context = save_get_ctx(

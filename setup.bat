@@ -56,7 +56,7 @@ where python >nul 2>&1 && (
   set INCLUDE=C:\Program Files\OpenSSL-Win64\include;%INCLUDE%
 
   echo [INSTALL] Installing Requirements
-  python -m pip install --no-cache-dir wheel poetry==1.6.1
+  python -m pip install --no-cache-dir wheel poetry==1.8.4
   python -m poetry lock
   python -m poetry install --only main --no-root --no-interaction --no-ansi || python -m poetry install --only main --no-root --no-interaction --no-ansi || python -m poetry install --only main --no-root --no-interaction --no-ansi
  

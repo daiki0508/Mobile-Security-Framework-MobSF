@@ -12,9 +12,11 @@ from mobsf.MobSF.utils import (
     print_n_send_error_response,
 )
 from mobsf.StaticAnalyzer.views.common.shared_func import (
-    firebase_analysis,
     get_symbols,
     hash_gen,
+)
+from mobsf.StaticAnalyzer.views.common.firebase import (
+    firebase_analysis,
 )
 from mobsf.StaticAnalyzer.views.common.binary.lib_analysis import (
     library_analysis,
@@ -124,7 +126,7 @@ def so_analysis(request, app_dic, rescan, api):
             'urls': [],
             'emails': [],
         }
-        quark_results = []
+        behaviour_an = []
         # Get the strings and metadata from shared object
         get_strings_metadata(
             checksum,
@@ -137,7 +139,7 @@ def so_analysis(request, app_dic, rescan, api):
         # Firebase DB Check
         code_an_dic['firebase'] = firebase_analysis(
             checksum,
-            code_an_dic['urls_list'])
+            code_an_dic)
         # Domain Extraction and Malware Check
         code_an_dic['domains'] = MalwareDomainCheck().scan(
             checksum,
@@ -159,7 +161,7 @@ def so_analysis(request, app_dic, rescan, api):
             cert_dic,
             elf_dict['elf_analysis'],
             apkid_results,
-            quark_results,
+            behaviour_an,
             trackers,
             original_func,
             rescan,

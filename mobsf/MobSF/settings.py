@@ -13,10 +13,11 @@ from mobsf.MobSF.init import (
     first_run,
     get_mobsf_home,
     get_mobsf_version,
+    get_secret_from_file_or_env,
+    load_source,
 )
 
 logger = logging.getLogger(__name__)
-
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #       MOBSF CONFIGURATION
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -27,21 +28,23 @@ USE_HOME = True
 
 # MobSF Data Directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MobSF_HOME = get_mobsf_home(USE_HOME, BASE_DIR)
+MOBSF_HOME = get_mobsf_home(USE_HOME, BASE_DIR)
 # Download Directory
-DWD_DIR = os.path.join(MobSF_HOME, 'downloads/')
+DWD_DIR = os.path.join(MOBSF_HOME, 'downloads/')
 # Screenshot Directory
-SCREEN_DIR = os.path.join(MobSF_HOME, 'downloads/screen/')
+SCREEN_DIR = os.path.join(MOBSF_HOME, 'downloads/screen/')
 # Upload Directory
-UPLD_DIR = os.path.join(MobSF_HOME, 'uploads/')
+UPLD_DIR = os.path.join(MOBSF_HOME, 'uploads/')
 # Database Directory
-DB_DIR = os.path.join(MobSF_HOME, 'db.sqlite3')
+DB_DIR = os.path.join(MOBSF_HOME, 'db.sqlite3')
 # Signatures used by modules
-SIGNATURE_DIR = os.path.join(MobSF_HOME, 'signatures/')
+SIGNATURE_DIR = os.path.join(MOBSF_HOME, 'signatures/')
 # Tools Directory
 TOOLS_DIR = os.path.join(BASE_DIR, 'DynamicAnalyzer/tools/')
+# Downloaded Tools Directory
+DOWNLOADED_TOOLS_DIR = os.path.join(MOBSF_HOME, 'tools/')
 # Secret File
-SECRET_FILE = os.path.join(MobSF_HOME, 'secret')
+SECRET_FILE = os.path.join(MOBSF_HOME, 'secret')
 
 # ==========Load MobSF User Settings==========
 import sys
@@ -82,8 +85,8 @@ def import_source_file(modname: str, fname: str | Path) -> "types.ModuleType":
 
 try:
     if USE_HOME:
-        USER_CONFIG = os.path.join(MobSF_HOME, 'config.py')
-        sett = import_source_file('user_settings', USER_CONFIG)
+        USER_CONFIG = os.path.join(MOBSF_HOME, 'config.py')
+        sett = load_source('user_settings', USER_CONFIG)
         locals().update(  # lgtm [py/modification-of-locals]
             {k: v for k, v in list(sett.__dict__.items())
                 if not k.startswith('__')})
@@ -95,7 +98,7 @@ except Exception:
     CONFIG_HOME = False
 
 # ===MOBSF SECRET GENERATION AND DB MIGRATION====
-SECRET_KEY = first_run(SECRET_FILE, BASE_DIR, MobSF_HOME)
+SECRET_KEY = first_run(SECRET_FILE, BASE_DIR, MOBSF_HOME)
 
 # =============ALLOWED DOWNLOAD EXTENSIONS=====
 ALLOWED_EXTENSIONS = {
@@ -107,6 +110,9 @@ ALLOWED_EXTENSIONS = {
     '.zip': 'application/zip',
     '.tar': 'application/x-tar',
     '.apk': 'application/octet-stream',
+    '.apks': 'application/octet-stream',
+    '.xapk': 'application/octet-stream',
+    '.aab': 'application/octet-stream',
     '.ipa': 'application/octet-stream',
     '.jar': 'application/java-archive',
     '.aar': 'application/octet-stream',
@@ -114,6 +120,7 @@ ALLOWED_EXTENSIONS = {
     '.dylib': 'application/octet-stream',
     '.a': 'application/octet-stream',
     '.pcap': 'application/vnd.tcpdump.pcap',
+    '.appx': 'application/vns.ms-appx',
 }
 # =============ALLOWED MIMETYPES=================
 APK_MIME = [
@@ -179,30 +186,28 @@ APKPLZ = 'https://apkplz.net/download-app/'
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-# Sqlite3 support
-
-DATABASES = {
-    'default': {
+if (os.environ.get('POSTGRES_USER')
+        and (os.environ.get('POSTGRES_PASSWORD')
+             or os.environ.get('POSTGRES_PASSWORD_FILE'))
+        and os.environ.get('POSTGRES_HOST')):
+    # Postgres support
+    default = {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('POSTGRES_DB', 'mobsf'),
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': get_secret_from_file_or_env('POSTGRES_PASSWORD'),
+        'HOST': os.environ['POSTGRES_HOST'],
+        'PORT': int(os.getenv('POSTGRES_PORT', 5432)),
+    }
+else:
+    # Sqlite3 support
+    default = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': DB_DIR,
-    },
-}
-# End Sqlite3 support
-
-# Postgres DB - Install psycopg2
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mobsf',
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': os.environ['POSTGRES_HOST'],
-        'PORT': 5432,
     }
+DATABASES = {
+    'default': default,
 }
-# End Postgres support
-"""
 # ===============================================
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 DEBUG = bool(os.getenv('MOBSF_DEBUG', '0') == '1')
@@ -231,6 +236,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_ratelimit.middleware.RatelimitMiddleware',
 )
 MIDDLEWARE = (
     'mobsf.MobSF.views.api.api_middleware.RestApiAuthMiddleware',
@@ -323,7 +329,7 @@ LOGGING = {
         'logfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(MobSF_HOME, 'debug.log'),
+            'filename': os.path.join(MOBSF_HOME, 'debug.log'),
             'formatter': 'standard',
         },
         'console': {
@@ -366,9 +372,11 @@ LOGGING = {
         },
     },
 }
-JADX_TIMEOUT = int(os.getenv('MOBSF_JADX_TIMEOUT', 1800))
+JADX_TIMEOUT = int(os.getenv('MOBSF_JADX_TIMEOUT', 1000))
+SAST_TIMEOUT = int(os.getenv('MOBSF_SAST_TIMEOUT', 1000))
+BINARY_ANALYSIS_TIMEOUT = int(os.getenv('MOBSF_BINARY_ANALYSIS_TIMEOUT', 600))
 DISABLE_AUTHENTICATION = os.getenv('MOBSF_DISABLE_AUTHENTICATION')
-RATELIMIT = os.getenv('MOBSF_RATELIMIT', '7/1m')
+RATELIMIT = os.getenv('MOBSF_RATELIMIT', '7/m')
 USE_X_FORWARDED_HOST = bool(
     os.getenv('MOBSF_USE_X_FORWARDED_HOST', '1') == '1')
 USE_X_FORWARDED_PORT = bool(
