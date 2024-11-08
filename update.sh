@@ -18,6 +18,37 @@ else
     exit 1
 fi
 
+# Pip Check and Upgrade
+python3 -m pip -V
+if [ $? -eq 0 ]; then
+    echo '[INSTALL] Found pip'
+    if [[ $unamestr == 'Darwin' ]]; then
+        python3 -m pip install --no-cache-dir --upgrade pip
+    else
+        python3 -m pip install --no-cache-dir --upgrade pip --user
+    fi
+else
+    echo '[ERROR] python3-pip not installed'
+    exit 1
+fi
+
+# macOS Specific Checks
+if [[ $unamestr == 'Darwin' ]]; then
+    # Check if xcode is installed
+    xcode-select -v
+    if ! [ $? -eq 0 ]; then
+        echo 'Please install command-line tools'
+        echo 'xcode-select --install'
+        exit 1
+    else
+        echo '[INSTALL] Found Xcode'
+	  fi    
+fi
+
+echo '[INSTALL] Installing Requirements'
+python3 -m pip install --no-cache-dir wheel poetry==1.6.1
+python3 -m poetry install --no-root --only main --no-interaction --no-ansi
+
 echo '[INSTALL] Migrating Database'
 export DJANGO_SUPERUSER_USERNAME=mobsf
 export DJANGO_SUPERUSER_PASSWORD=mobsf
