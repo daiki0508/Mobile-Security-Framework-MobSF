@@ -36,6 +36,14 @@ else
 fi    
 }
 
+# Pipの仮想環境の確認
+if [ -z "$VIRTUAL_ENV" ]; then
+    echo "You are not in a pipenv virtual environment."
+    exit 1
+else
+    echo "You are in a pipenv virtual environment: $VIRTUAL_ENV"
+fi
+
 if [ ! -z "$var" ]; then
     IP=$(echo $var | awk -F':' '{print $1}')
     PORT=$(echo $var | awk -F':' '{print $2}')

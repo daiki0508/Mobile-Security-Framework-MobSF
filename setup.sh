@@ -18,6 +18,14 @@ else
     exit 1
 fi
 
+# Pipの仮想環境の確認
+if [ -z "$VIRTUAL_ENV" ]; then
+    echo "You are not in a pipenv virtual environment."
+    exit 1
+else
+    echo "You are in a pipenv virtual environment: $VIRTUAL_ENV"
+fi
+
 # Pip Check and Upgrade
 python3 -m pip -V
 if [ $? -eq 0 ]; then
