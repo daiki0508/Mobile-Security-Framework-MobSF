@@ -30,7 +30,7 @@ def get_secret_text_from_binary(app_type, src, bin_name):
     elif app_type == 'dylib' or app_type == 'so':
         app_dir = src + bin_name
     command = ['echo', app_dir]
-    command2 = ['nuclei', '-t', home + 'nuclei-templates/file/keys', '-et', home + 'nuclei-templates/file/keys/credential-exposure-file.yaml', '-je', app_dir + 'tmp.json']
+    command2 = ['nuclei', '-file', '-t', home + 'nuclei-templates/file/keys/', '-et', home + 'nuclei-templates/file/keys/credential-exposure-file.yaml', '-je', app_dir + 'tmp.json']
 
     try:
         result_echo = subprocess.Popen(command, stdout=subprocess.PIPE)
