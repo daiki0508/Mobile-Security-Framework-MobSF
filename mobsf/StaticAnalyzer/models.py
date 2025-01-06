@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 
 from django.db import models
+from django.utils import timezone
 
 
 class DjangoPermissions(Enum):
@@ -82,6 +83,7 @@ class StaticAnalyzerAndroid(models.Model):
     NETWORK_SECURITY = models.TextField(default=[])
     SECRETS = models.TextField(default=[])
     ORIGINALS = models.TextField(default=[])
+    SBOM = models.TextField(default={})
 
 
 class StaticAnalyzerIOS(models.Model):
@@ -169,3 +171,17 @@ class SuppressFindings(models.Model):
     SUPPRESS_RULE_ID = models.TextField(default=[])
     SUPPRESS_FILES = models.TextField(default={})
     SUPPRESS_TYPE = models.TextField(default='')
+
+
+class EnqueuedTask(models.Model):
+    task_id = models.CharField(max_length=255)
+    checksum = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=255, default='Enqueued')
+    started_at = models.DateTimeField(null=True)
+    completed_at = models.DateTimeField(null=True)
+    app_name = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return f'{self.name} ({self.status})'

@@ -22,6 +22,10 @@ import unicodedata
 import threading
 from urllib.parse import urlparse
 from pathlib import Path
+from concurrent.futures import (
+    ThreadPoolExecutor,
+    TimeoutError as ThreadPoolTimeoutError,
+)
 
 from packaging.version import Version
 
@@ -57,6 +61,8 @@ EMAIL_REGEX = re.compile(r'[\w+.-]{1,20}@[\w-]{1,20}\.[\w]{2,10}')
 USERNAME_REGEX = re.compile(r'^\w[\w\-\@\.]{1,35}$')
 GOOGLE_API_KEY_REGEX = re.compile(r'AIza[0-9A-Za-z-_]{35}$')
 GOOGLE_APP_ID_REGEX = re.compile(r'\d{1,2}:\d{1,50}:android:[a-f0-9]{1,50}')
+PKG_REGEX = re.compile(
+    r'package\s+([a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*);')
 
 
 class Color(object):
@@ -92,6 +98,17 @@ def upstream_proxy(flaw_type):
     return proxies, verify
 
 
+def get_system_resources():
+    """Get CPU and Memory Available."""
+    # Get number of physical cores
+    physical_cores = psutil.cpu_count(logical=False)
+    # Get number of logical processors (threads)
+    logical_processors = psutil.cpu_count(logical=True)
+    # Get total RAM
+    total_ram = psutil.virtual_memory().total / (1024 ** 3)  # Convert bytes to GB
+    return physical_cores, logical_processors, total_ram
+
+
 def print_version():
     """Print MobSF Version."""
     logger.info(settings.BANNER)
@@ -116,6 +133,8 @@ def print_version():
         dst_str = f' ({dist}) '
     env_str = f'OS Environment: {os}{dst_str}{pltfm}'
     logger.info(env_str)
+    cores, threads, ram = get_system_resources()
+    logger.info('CPU Cores: %s, Threads: %s, RAM: %.2f GB', cores, threads, ram)
     find_java_binary()
     check_basic_env()
     thread = threading.Thread(target=check_update, name='check_update')
@@ -176,6 +195,32 @@ def find_java_binary():
         if is_file_exists(java):
             return java
     return 'java'
+
+
+def find_aapt(tool_name):
+    """Find the specified tool (aapt or aapt2)."""
+    # Check system PATH for the tool
+    tool_path = shutil.which(tool_name)
+    if tool_path:
+        return tool_path
+
+    # Check common Android SDK locations
+    home_dir = Path.home()  # Get the user's home directory
+    sdk_paths = [
+        home_dir / 'Library' / 'Android' / 'sdk',  # macOS
+        home_dir / 'Android' / 'Sdk',              # Linux
+        home_dir / 'AppData' / 'Local' / 'Android' / 'Sdk',  # Windows
+    ]
+
+    for sdk_path in sdk_paths:
+        build_tools_path = sdk_path / 'build-tools'
+        if build_tools_path.exists():
+            for version in sorted(build_tools_path.iterdir(), reverse=True):
+                tool_path = version / tool_name
+                if tool_path.exists():
+                    return str(tool_path)
+
+    return None
 
 
 def print_n_send_error_response(request,
@@ -661,6 +706,8 @@ def common_check(instance_id):
 
 def is_path_traversal(user_input):
     """Check for path traversal."""
+    if not user_input:
+        return False
     if (('../' in user_input)
         or ('%2e%2e' in user_input)
         or ('..' in user_input)
@@ -752,6 +799,11 @@ def replace(value, arg):
     return value.replace(what, to)
 
 
+def pathify(value):
+    """Convert to path."""
+    return value.replace('.', '/')
+
+
 def relative_path(value):
     """Show relative path to two parents."""
     sep = None
@@ -825,6 +877,7 @@ def get_android_dm_exception_msg():
 
 def get_android_src_dir(app_dir, typ):
     """Get Android source code location."""
+    src = None
     if typ == 'apk':
         src = app_dir / 'java_source'
     elif typ == 'studio':
@@ -943,21 +996,28 @@ class TaskTimeoutError(Exception):
 
 
 def run_with_timeout(func, limit, *args, **kwargs):
-    def run_func(result, *args, **kwargs):
-        result.append(func(*args, **kwargs))
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(func, *args, **kwargs)
+        try:
+            return future.result(timeout=limit)
+        except ThreadPoolTimeoutError:
+            msg = f'function <{func.__name__}> timed out after {limit} seconds'
+            raise TaskTimeoutError(msg)
 
-    result = []
-    thread = threading.Thread(
-        target=run_func,
-        args=(result, *args),
-        kwargs=kwargs)
-    thread.start()
-    thread.join(limit)
 
-    if thread.is_alive():
-        msg = (f'function <{func.__name__}> '
-               f'timed out after {limit} seconds')
-        raise TaskTimeoutError(msg)
-    if result:
-        return result[0]
-    return None
+def set_permissions(path):
+    base_path = Path(path)
+    # Read/Write for directories without execute
+    perm_dir = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
+    # Read/Write for files
+    perm_file = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
+
+    # Set permissions for directories and files
+    for item in base_path.rglob('*'):
+        try:
+            if item.is_dir():
+                item.chmod(perm_dir)
+            elif item.is_file():
+                item.chmod(perm_file)
+        except Exception:
+            pass

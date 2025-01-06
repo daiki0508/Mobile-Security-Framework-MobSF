@@ -38,9 +38,20 @@ def common_fields(findings, data):
             sev = cd['metadata']['severity']
         desc = cd['metadata']['description']
         ref = cd['metadata'].get('ref', '')
+
+        files_dict = cd.get('files', {})
+        files_lines = [f'{file}, line(s) {lines}'
+                       for file, lines in files_dict.items()]
+        all_files_str = '\n'.join(files_lines)
+
+        if files_dict:
+            fdesc = f'{desc}\n{ref}\n\nFiles:\n{all_files_str}'
+        else:
+            fdesc = f'{desc}\n{ref}'
+
         findings[sev].append({
             'title': cd['metadata']['description'],
-            'description': f'{desc}\n{ref}',
+            'description': fdesc,
             'section': 'code',
         })
     # Permissions
@@ -71,7 +82,7 @@ def common_fields(findings, data):
     # File Analysis
     cert_files = None
     cfp = []
-    for fa in data['file_analysis']:
+    for fa in data.get('file_analysis', []):
         if isinstance(fa, str):
             # FA is being used by so/dylib
             continue
