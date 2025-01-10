@@ -27,7 +27,7 @@ def get_secret_text_from_binary(app_type, src, bin_name):
         app_dir = src + 'apktool_out' + '/'
     elif app_type == 'ipa':
         app_dir = src + bin_name + '.app' + '/'
-    elif app_type == 'dylib' or app_type == 'so':
+    elif app_type == 'dylib' or app_type == 'so' or app_type == 'aar':
         app_dir = src + bin_name
     command = ['echo', app_dir]
     command2 = ['nuclei', '-file', '-t', home + 'nuclei-templates/file/keys/', '-et', home + 'nuclei-templates/file/keys/credential-exposure-file.yaml', '-je', app_dir + 'tmp.json']

@@ -15,6 +15,7 @@ from mobsf.MobSF.utils import (
     file_size,
     print_n_send_error_response,
 )
+from mobsf.StaticAnalyzer.views.common.binary.nuclei import get_secret_text_from_binary
 from mobsf.StaticAnalyzer.views.common.shared_func import (
     get_avg_cvss,
     hash_gen,
@@ -191,6 +192,9 @@ def common_analysis(request, app_dic, rescan, api, analysis_type):
         code_an_dic['domains'] = MalwareDomainCheck().scan(
             checksum,
             code_an_dic['urls_list'])
+        
+        ## original_func
+        original_func = get_secret_text_from_binary('aar', app_dic['app_dir'], app_dic['app_file'])
 
         context = save_get_ctx(
             app_dic,
@@ -201,6 +205,7 @@ def common_analysis(request, app_dic, rescan, api, analysis_type):
             elf_dict['elf_analysis'],
             {},
             tracker_res,
+            original_func,
             rescan,
         )
     context['appsec'] = get_android_dashboard(context, True)

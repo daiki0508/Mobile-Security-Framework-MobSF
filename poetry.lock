@@ -769,24 +769,24 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "frida"
-version = "16.5.9"
+version = "16.6.1"
 description = "Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "frida-16.5.9-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:ca22d7ea49fdd36b01a4cf19fa98ab0219d8f70861c0dc8b8ecd6c3ab17a6d83"},
-    {file = "frida-16.5.9-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:795a6a07c5729e21e891293793a66f85d8b3cb59cc3f4fe8c9b944b32ed216b7"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux1_i686.whl", hash = "sha256:23494ba2991a68cb1fd9abe3baaea8ecc18ed7716f97bac5fb9e1567f893de12"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux1_x86_64.whl", hash = "sha256:821abe2c2ec41394acbdd9a7d635531fc3d5cfd98550342225499dea59b0a565"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:59d4ea960f06b90b62534af30e3959637bf19bb48c584993386c3d40f2d08994"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux2014_armv7l.whl", hash = "sha256:4881cab6c69148c0a27902305d10f01c615d85047cf45f627f03ada3c9fcc5a6"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:a473ccada3e5f4db6779ff7ccc26179548c87418ce7f26408d534380c0147d4e"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:d7857d628160682d16ec664398dbe71258986d6e2fa5ec37a40724bded35461c"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:e4b97c3cf9be1f6ab0dd6e916bb3f34039b44fed58e70853a59cdb51dc4e1594"},
-    {file = "frida-16.5.9-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:9ff9eefa0e860d402a125134d2078c74e16397abe0febc7060029ed2f4b2db90"},
-    {file = "frida-16.5.9-cp37-abi3-win32.whl", hash = "sha256:4e9da3119afbcbbe15e570639d0e93c1d6f105d85aa37afb01a3a5d1231d13e0"},
-    {file = "frida-16.5.9-cp37-abi3-win_amd64.whl", hash = "sha256:5d619903e0879299d68ae0ce489de3f561b565eab40dd18c9d31c69ab03d8bcc"},
-    {file = "frida-16.5.9.tar.gz", hash = "sha256:a563f78842d2663f0a8282091003b338af7336d57d56b329913177154b9083ac"},
+    {file = "frida-16.6.1-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:759589c4bdf2aba137e4a9020555bca3ad92d550d0d831d948c380082b104c15"},
+    {file = "frida-16.6.1-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:a8ad690f9abfa69f1bbc8dc624a0065153efc082e8240bd69462955d6d9b8c76"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux1_i686.whl", hash = "sha256:215b4f0c69bf5324271aa128c86afa34c0a7f179f62db9d82bcc87998fe91231"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux1_x86_64.whl", hash = "sha256:deca4f770fd59bea04bd684e5fa1fd04f86e53715f483b78c2fa293c3d9969ee"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:7f6fd7ea1713c3d910d4fd39feccc1c89cb486ca43653b1ed81fd090e583ea15"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux2014_armv7l.whl", hash = "sha256:fcbc88c108c3b358b489b604c334eaf019109a5d7a6fdd1fa2d26b812dff400a"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:456c28132b6062ace42f59b8009ff43ebfe71f9980ffa5fb0680af1b8b537c34"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:ab1d38b0162dd72389dc0ce8e43d94e8733a1baeb8cefff36812b570bbfccd65"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:2b3e0f0b1bcc317e85ef55ba79b17c2e96d5092945bbfe29c03e6a338e2e7ab5"},
+    {file = "frida-16.6.1-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:a6627da51bb49fe9248afdfc9d81ec95ec82bcae98d3b2d02e3e468e59f3abd9"},
+    {file = "frida-16.6.1-cp37-abi3-win32.whl", hash = "sha256:c4bd309a864423fbef2ed0357bdefa488c7aba4a6692155ca6092fccc624ec61"},
+    {file = "frida-16.6.1-cp37-abi3-win_amd64.whl", hash = "sha256:1d47799e71002f8ad2d778ad1aff4f3606700692d9bb3945402283944a321da4"},
+    {file = "frida-16.6.1.tar.gz", hash = "sha256:a23083f2e5e3b696532187dc9f59859484f419b7d35bb6bca2bd3d6384f61bc2"},
 ]
 
 [package.dependencies]
