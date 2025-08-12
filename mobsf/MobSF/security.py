@@ -148,8 +148,8 @@ def get_executable_hashes():
 
 def store_exec_hashes_at_first_run():
     """Store executable hashes at first run."""
+    global EXECUTABLE_HASH_MAP
     try:
-        global EXECUTABLE_HASH_MAP
         hashes, signature = get_executable_hashes()
         hashes['signature'] = signature
         EXECUTABLE_HASH_MAP = hashes
@@ -160,7 +160,6 @@ def store_exec_hashes_at_first_run():
 
 
 def subprocess_hook(oldfunc, *args, **kwargs):
-    global EXECUTABLE_HASH_MAP
     if isinstance(args[0], str):
         # arg is a string
         agmtz = args[0].split()
@@ -326,3 +325,40 @@ def valid_host(host):
     finally:
         # Restore default socket timeout
         socket.setdefaulttimeout(default_timeout)
+
+
+def sanitize_svg(svg_content):
+    """Sanitize SVG content to prevent XSS attacks."""
+    logger.info('Sanitizing SVG contents')
+    import bleach
+    # Allow standard SVG tags and attributes, but remove scripts and event handlers
+    safe_tags = [
+        'svg', 'g', 'path', 'rect', 'circle', 'ellipse',
+        'line', 'polyline', 'polygon', 'text', 'tspan',
+        'defs', 'use', 'image', 'mask', 'clipPath',
+        'filter', 'linearGradient', 'radialGradient', 'stop',
+    ]
+    safe_attrs = {
+        '*': ['id', 'class', 'transform', 'fill', 'stroke', 'stroke-width', 'opacity'],
+        'svg': ['width', 'height', 'viewBox', 'xmlns', 'version'],
+        'path': ['d'],
+        'rect': ['x', 'y', 'width', 'height', 'rx', 'ry'],
+        'circle': ['cx', 'cy', 'r'],
+        'ellipse': ['cx', 'cy', 'rx', 'ry'],
+        'line': ['x1', 'y1', 'x2', 'y2'],
+        'polyline': ['points'],
+        'polygon': ['points'],
+        'text': ['x', 'y', 'font-family', 'font-size'],
+        'image': ['x', 'y', 'width', 'height', 'href'],
+        'use': ['x', 'y', 'width', 'height', 'href'],
+        'filter': ['x', 'y', 'width', 'height', 'href'],
+        'linearGradient': ['x1', 'y1', 'x2', 'y2'],
+        'radialGradient': ['cx', 'cy', 'r', 'fx', 'fy'],
+        'stop': ['offset', 'stop-color', 'stop-opacity'],
+    }
+    return bleach.clean(
+        svg_content,
+        tags=safe_tags,
+        attributes=safe_attrs,
+        strip=True,
+    )
