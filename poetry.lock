@@ -875,35 +875,35 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "frida"
-version = "17.5.2"
+version = "17.6.2"
 description = "Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "frida-17.5.2-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:cd839e9f06993c57e9a4237baff891f1e417c756b427744ce5a16bed751374a4"},
-    {file = "frida-17.5.2-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:ba220d239e26673fc2c68aa0b8aa279b488d656c9e5fa758f8512e8855f9612c"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux1_i686.whl", hash = "sha256:5b6d3c38b36d5c0f3c08b331556ff178b9d1ecd80003a0af86370b70b5f71061"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux1_x86_64.whl", hash = "sha256:68e90048bd51d5d91ade5cb36149bda586c40125701dd87b61375f4640aaa297"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:d5afc13848b00872fd4dec94729702bc60af797fcf146c0bc8afd77f95132d6d"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux2014_armv7l.whl", hash = "sha256:1f5a347f14ee27bc15bedc2ae2c3bc60a27fe8a7fb4ea8fb8e8a80cebff85c12"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:4c5447df91942aace3fe9d76f60500db3e26b03e4ee767678d1135a945f8fd84"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:489782eee52b4cce83ca4e7a74890af05827bb3623facac6b0161ddc26477a4b"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:166654c057cd6b164ed8de1bd53a09cc3c89a9ef1c34d02827674cf988a701ec"},
-    {file = "frida-17.5.2-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:e40453b67a6a029dda167adedbac401d60bb4309ac060529589393d0c93034ec"},
-    {file = "frida-17.5.2-cp37-abi3-win32.whl", hash = "sha256:3fbcde7f1f9a1ad2b560c4effee17bcc802ed453d854867fb1a081878c597ebb"},
-    {file = "frida-17.5.2-cp37-abi3-win_amd64.whl", hash = "sha256:30877e0d568d4eca41196fa0152b7802b591529cd44ccff02770754e1890747c"},
-    {file = "frida-17.5.2-cp37-abi3-win_arm64.whl", hash = "sha256:7edb180de954c961409d28932d71e9cf3b878fb93c632ac2fc4a45afed058847"},
-    {file = "frida-17.5.2.tar.gz", hash = "sha256:a9d682427bea8e997b3f4314c4e6d367e2432c728cceba2c814fb77f210a700f"},
+    {file = "frida-17.6.2-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:9763d7297643492a06d37a0fa21d43f414c3b7e58db0e81592c15d366a6adb79"},
+    {file = "frida-17.6.2-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:cbda78d63a9215086c7c6a05db26be0d6016f6f919e7135d3b9ffb46793ae3cb"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux1_i686.whl", hash = "sha256:eb2cfa5a008448e1f2a69812b419a08424fdc4a8a9b9bf92359eb96b73b84c4d"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux1_x86_64.whl", hash = "sha256:9c4508c427be455ee89730786bd9383eda7238fb3db22f85c255a667dd4bc491"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:e8544826fec0f592213b1c6d3b8a761850728bb06ac0112e872d3eb275804e69"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux2014_armv7l.whl", hash = "sha256:989a3cf929f7d07a54359bd92726a53487083d0f5d15aeb2d866ddb3ff23a08d"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:31ae33288cba23b56e6798319cdb70a75dff346084ddae5a51de4c8f84c1be53"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:d08e6963a35ed439c9c8c562da5f669d8dc04ea1d6e51a40a8f87b1036ae9ebc"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:8587e692b0dabd79346bd60911b117e964d1dce9fb5fa4a8f09ebfceda863945"},
+    {file = "frida-17.6.2-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:65d80cc275304e6dd4b9b7ebcfab22d65273e47f0a91cb3e6b13945398998a03"},
+    {file = "frida-17.6.2-cp37-abi3-win32.whl", hash = "sha256:38b4b46f109f09001c5f65729672b6c2237bd06a83fbd511cf448c040738ddee"},
+    {file = "frida-17.6.2-cp37-abi3-win_amd64.whl", hash = "sha256:c8669c36875c4e87064ffbda3ee59075c85de0eee76131e7ab1dde30e16289ea"},
+    {file = "frida-17.6.2-cp37-abi3-win_arm64.whl", hash = "sha256:b33366f5293c16d80c3929d15820d88e1e7432d3f28e9d031d568a40a8e2b29b"},
+    {file = "frida-17.6.2.tar.gz", hash = "sha256:1dfbf61d07702859b897ce5ecf8f2107ef941647e7c461bfdb681605a0747b51"},
 ]
 
 [[package]]
 name = "frida-tools"
-version = "14.5.0"
+version = "14.5.1"
 description = "Frida CLI tools"
 optional = false
 python-versions = "*"
 files = [
-    {file = "frida_tools-14.5.0.tar.gz", hash = "sha256:59d8f1d0d0c6a23a5ac9c1dc817a7e52206c880a11dd5dd4696c3df78f07599d"},
+    {file = "frida_tools-14.5.1.tar.gz", hash = "sha256:32c22a9367c791c4124068644f26d5c6fa0a84bbdd4d66ed16aef0e87ca4c4bf"},
 ]
 
 [package.dependencies]
@@ -926,24 +926,24 @@ files = [
 
 [[package]]
 name = "gunicorn"
-version = "23.0.0"
+version = "24.1.1"
 description = "WSGI HTTP Server for UNIX"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 files = [
-    {file = "gunicorn-23.0.0-py3-none-any.whl", hash = "sha256:ec400d38950de4dfd418cff8328b2c8faed0edb0d517d3394e457c317908ca4d"},
-    {file = "gunicorn-23.0.0.tar.gz", hash = "sha256:f014447a0101dc57e294f6c18ca6b40227a4c90e9bdb586042628030cba004ec"},
+    {file = "gunicorn-24.1.1-py3-none-any.whl", hash = "sha256:757f6b621fc4f7581a90600b2cd9df593461f06a41d7259cb9b94499dc4095a8"},
+    {file = "gunicorn-24.1.1.tar.gz", hash = "sha256:f006d110e5cb3102859b4f5cd48335dbd9cc28d0d27cd24ddbdafa6c60929408"},
 ]
 
 [package.dependencies]
 packaging = "*"
 
 [package.extras]
-eventlet = ["eventlet (>=0.24.1,!=0.36.0)"]
-gevent = ["gevent (>=1.4.0)"]
+eventlet = ["eventlet (>=0.40.3)"]
+gevent = ["gevent (>=24.10.1)"]
 setproctitle = ["setproctitle"]
-testing = ["coverage", "eventlet", "gevent", "pytest", "pytest-cov"]
-tornado = ["tornado (>=0.2)"]
+testing = ["coverage", "eventlet (>=0.40.3)", "gevent (>=24.10.1)", "pytest", "pytest-asyncio", "pytest-cov"]
+tornado = ["tornado (>=6.5.0)"]
 
 [[package]]
 name = "h11"
@@ -1642,13 +1642,13 @@ files = [
 
 [[package]]
 name = "packaging"
-version = "25.0"
+version = "26.0"
 description = "Core utilities for Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484"},
-    {file = "packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f"},
+    {file = "packaging-26.0-py3-none-any.whl", hash = "sha256:b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529"},
+    {file = "packaging-26.0.tar.gz", hash = "sha256:00243ae351a257117b6a241061796684b084ed1c516a08c48a3f7e147a9d80b4"},
 ]
 
 [[package]]
@@ -1826,13 +1826,13 @@ files = [
 
 [[package]]
 name = "pyasn1"
-version = "0.6.1"
+version = "0.6.2"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pyasn1-0.6.1-py3-none-any.whl", hash = "sha256:0d632f46f2ba09143da3a8afe9e33fb6f92fa2320ab7e886e2d0f7672af84629"},
-    {file = "pyasn1-0.6.1.tar.gz", hash = "sha256:6f580d2bdd84365380830acf45550f2511469f673cb4a5ae3857a3170128b034"},
+    {file = "pyasn1-0.6.2-py3-none-any.whl", hash = "sha256:1eb26d860996a18e9b6ed05e7aae0e9fc21619fcee6af91cca9bad4fbea224bf"},
+    {file = "pyasn1-0.6.2.tar.gz", hash = "sha256:9b59a2b25ba7e4f8197db7686c09fb33e658b98339fadb826e9512629017833b"},
 ]
 
 [[package]]
@@ -1851,13 +1851,13 @@ pyasn1 = ">=0.6.1,<0.7.0"
 
 [[package]]
 name = "pycparser"
-version = "2.23"
+version = "3.0"
 description = "C parser in Python"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 files = [
-    {file = "pycparser-2.23-py3-none-any.whl", hash = "sha256:e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"},
-    {file = "pycparser-2.23.tar.gz", hash = "sha256:78816d4f24add8f10a06d6f05b4d424ad9e96cfebf68a4ddc99c65c0720d00c2"},
+    {file = "pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992"},
+    {file = "pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29"},
 ]
 
 [[package]]
@@ -2403,13 +2403,13 @@ files = [
 
 [[package]]
 name = "soupsieve"
-version = "2.8.1"
+version = "2.8.3"
 description = "A modern CSS selector implementation for Beautiful Soup."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "soupsieve-2.8.1-py3-none-any.whl", hash = "sha256:a11fe2a6f3d76ab3cf2de04eb339c1be5b506a8a47f2ceb6d139803177f85434"},
-    {file = "soupsieve-2.8.1.tar.gz", hash = "sha256:4cf733bc50fa805f5df4b8ef4740fc0e0fa6218cf3006269afd3f9d6d80fd350"},
+    {file = "soupsieve-2.8.3-py3-none-any.whl", hash = "sha256:ed64f2ba4eebeab06cc4962affce381647455978ffc1e36bb79a545b91f45a95"},
+    {file = "soupsieve-2.8.3.tar.gz", hash = "sha256:3267f1eeea4251fb42728b6dfb746edc9acaffc4a45b27e19450b676586e8349"},
 ]
 
 [[package]]
@@ -2564,13 +2564,13 @@ testing = ["coverage (>=7.6.0)", "pytest", "pytest-cov"]
 
 [[package]]
 name = "wcwidth"
-version = "0.2.14"
+version = "0.5.0"
 description = "Measures the displayed width of unicode strings in a terminal"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "wcwidth-0.2.14-py2.py3-none-any.whl", hash = "sha256:a7bb560c8aee30f9957e5f9895805edd20602f2d7f720186dfd906e82b4982e1"},
-    {file = "wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605"},
+    {file = "wcwidth-0.5.0-py3-none-any.whl", hash = "sha256:1efe1361b83b0ff7877b81ba57c8562c99cf812158b778988ce17ec061095695"},
+    {file = "wcwidth-0.5.0.tar.gz", hash = "sha256:f89c103c949a693bf563377b2153082bf58e309919dfb7f27b04d862a0089333"},
 ]
 
 [[package]]
