@@ -15,7 +15,16 @@ from urllib.request import (
     getproxies,
 )
 
-from mobsf.MobSF.exceptions import PathTraversalError
+try:
+    # When imported as part of the mobsf package (e.g. from init.py).
+    from mobsf.MobSF.exceptions import PathTraversalError
+except ModuleNotFoundError:
+    # This module is also run standalone (update.sh and the Docker
+    # dependencies.sh copy this single file and execute it directly),
+    # where the mobsf package is not importable. Fall back to a local
+    # definition so the download still works.
+    class PathTraversalError(Exception):
+        """Raised when a path traversal attempt is detected."""
 
 logging.basicConfig(
     level=logging.INFO,
