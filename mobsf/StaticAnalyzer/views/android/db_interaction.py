@@ -89,13 +89,9 @@ def get_context_from_db_entry(db_entry: QuerySet) -> dict:
             'behaviour': python_dict(db_entry[0].QUARK),
             'trackers': python_dict(db_entry[0].TRACKERS),
             'playstore_details': python_dict(db_entry[0].PLAYSTORE_DETAILS),
-<<<<<<< HEAD
-            'secrets': python_list(db_entry[0].SECRETS),
-            'originals': python_list(db_entry[0].ORIGINALS),
-=======
             'secrets': sort_secrets(
                 python_list(db_entry[0].SECRETS)),
->>>>>>> upstream/master
+            'originals': python_list(db_entry[0].ORIGINALS),
             'logs': get_scan_logs(db_entry[0].MD5),
             'sbom': python_dict(db_entry[0].SBOM),
         }
